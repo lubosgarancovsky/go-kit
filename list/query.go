@@ -6,22 +6,23 @@ import (
 )
 
 type QueryParms struct {
-	Page     int    `query:"page" default:"1"`
-	PageSize int    `query:"page" default:"10"`
-	Sort     string `query:"sort" default:""`
-	Filter   string `query:"filter" default:""`
+	Page     int    `form:"page" binding:"min=1"`
+	PageSize int    `form:"pageSize" binding:"min=1,max=100"`
+	Sort     string `form:"sort" default:""`
+	Filter   string `form:"filter" default:""`
 }
 
 type ListingQuery struct {
 	Limit  int
 	Offset int
-	Filter filter.Filter
+	Filter *filter.Filter
 	Sort   []sort.Sort
+	Page   int
 }
 
 type Page[T any] struct {
-	Items      []T `json:"items"`
-	Page       int `json:"page"`
-	PageSize   int `json:"pageSize"`
-	TotalCount int `json:"totalCount"`
+	Items      []T   `json:"items"`
+	Page       int   `json:"page"`
+	PageSize   int   `json:"pageSize"`
+	TotalCount int64 `json:"totalCount"`
 }
