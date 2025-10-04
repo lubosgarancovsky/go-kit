@@ -16,7 +16,7 @@ type ListingQuery struct {
 	Limit  int
 	Offset int
 	Filter filter.Filter
-	Sort   sort.Sort
+	Sort   []sort.Sort
 }
 
 type Page[T any] struct {
