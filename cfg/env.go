@@ -18,10 +18,7 @@ func LoadEnv(target any, paths ...string) error {
 	v = v.Elem()  // struct value
 	t := v.Type() // struct type (string, uint64...)
 
-	cfgMap, err := LoadEnvFiles(paths)
-	if err != nil {
-		return err
-	}
+	cfgMap := LoadEnvFiles(paths)
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
@@ -50,7 +47,7 @@ func LoadEnv(target any, paths ...string) error {
 	return nil
 }
 
-func LoadEnvFiles(paths []string) (map[string]string, error) {
+func LoadEnvFiles(paths []string) map[string]string {
 	if len(paths) == 0 {
 		return LoadEnvFile(".env")
 	}
@@ -58,25 +55,22 @@ func LoadEnvFiles(paths []string) (map[string]string, error) {
 	result := map[string]string{}
 
 	for _, p := range paths {
-		scannedMap, err := LoadEnvFile(p)
-		if err != nil {
-			return nil, err
-		}
+		scannedMap := LoadEnvFile(p)
 		result = MergeMaps(result, scannedMap)
 	}
-	return result, nil
+	return result
 }
 
-func LoadEnvFile(path string) (map[string]string, error) {
+func LoadEnvFile(path string) map[string]string {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return map[string]string{}
 	}
 	defer file.Close()
 	return ScanEnvFile(file)
 }
 
-func ScanEnvFile(file fs.File) (map[string]string, error) {
+func ScanEnvFile(file fs.File) map[string]string {
 	result := map[string]string{}
 	scanner := bufio.NewScanner(file)
 	lineNum := 1
@@ -102,5 +96,5 @@ func ScanEnvFile(file fs.File) (map[string]string, error) {
 		lineNum++
 	}
 
-	return result, scanner.Err()
+	return result
 }
