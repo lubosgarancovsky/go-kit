@@ -88,7 +88,26 @@ func comparisonNode(node *rsql.ComparisonNode, fieldMap map[string]string) (*Fil
 		if len(node.Value) == 0 {
 			return nil, fmt.Errorf("no value provided for field %s", node.Field)
 		}
-		args = []interface{}{node.Value[0]}
+
+		if node.Value[0] == "null" {
+			args = []interface{}{}
+		} else {
+			args = []interface{}{node.Value[0]}
+		}
+	}
+
+	if node.Value[0] == "null" && operator == "=" {
+		return &Filter{
+			Query: fmt.Sprintf("%s IS NULL", field),
+			Args:  args,
+		}, nil
+	}
+
+	if node.Value[0] == "null" && operator == "!=" {
+		return &Filter{
+			Query: fmt.Sprintf("%s IS NOT NULL", field),
+			Args:  args,
+		}, nil
 	}
 
 	return &Filter{
