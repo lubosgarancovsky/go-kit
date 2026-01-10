@@ -1,14 +1,14 @@
-package filter
+package rsql
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/lubosgarancovsky/go-kit/rsql"
+	"github.com/lubosgarancovsky/go-kit"
 )
 
 func TestBuildFilter(t *testing.T) {
-	ast, err := rsql.New().Parse("name==\"John Doe\"")
+	ast, err := go_kit.NewRSQLParser().Parse("name==\"John Doe\"")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -29,7 +29,7 @@ func TestBuildFilter(t *testing.T) {
 }
 
 func TestBuildFilterAND(t *testing.T) {
-	ast, err := rsql.New().Parse("name==\"John Doe\";age=ge=18")
+	ast, err := go_kit.NewRSQLParser().Parse("name==\"John Doe\";age=ge=18")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -50,7 +50,7 @@ func TestBuildFilterAND(t *testing.T) {
 }
 
 func TestBuildFilterOR(t *testing.T) {
-	ast, err := rsql.New().Parse("name==\"John Doe\",age=ge=18")
+	ast, err := go_kit.NewRSQLParser().Parse("name==\"John Doe\",age=ge=18")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -71,7 +71,7 @@ func TestBuildFilterOR(t *testing.T) {
 }
 
 func TestBuildFilterORAND(t *testing.T) {
-	ast, err := rsql.New().Parse("(name==\"John Doe\";age=ge=18),id=in=(\"1\",\"2\",\"3\")")
+	ast, err := go_kit.NewRSQLParser().Parse("(name==\"John Doe\";age=ge=18),id=in=(\"1\",\"2\",\"3\")")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -92,7 +92,7 @@ func TestBuildFilterORAND(t *testing.T) {
 }
 
 func TestBuildFilterWithNull(t *testing.T) {
-	ast, err := rsql.New().Parse("name==null")
+	ast, err := go_kit.NewRSQLParser().Parse("name==null")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -113,7 +113,7 @@ func TestBuildFilterWithNull(t *testing.T) {
 }
 
 func TestBuildFilterWithNotNull(t *testing.T) {
-	ast, err := rsql.New().Parse("name!=null")
+	ast, err := go_kit.NewRSQLParser().Parse("name!=null")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -134,7 +134,7 @@ func TestBuildFilterWithNotNull(t *testing.T) {
 }
 
 func TestBuildFilterWithMultipleNull(t *testing.T) {
-	ast, err := rsql.New().Parse("name==joe;dateOfBirth!=null;deletedAt==null;age=ge=18")
+	ast, err := go_kit.NewRSQLParser().Parse("name==joe;dateOfBirth!=null;deletedAt==null;age=ge=18")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}

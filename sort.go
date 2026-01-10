@@ -1,4 +1,4 @@
-package sort
+package go_kit
 
 import (
 	"fmt"

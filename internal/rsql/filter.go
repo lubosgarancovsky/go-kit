@@ -1,10 +1,8 @@
-package filter
+package rsql
 
 import (
 	"fmt"
 	"strings"
-
-	"github.com/lubosgarancovsky/go-kit/rsql"
 )
 
 type Filter struct {
@@ -24,23 +22,23 @@ var rsqlToSQL = map[string]string{
 	"=like=": "LIKE",
 }
 
-func BuildFilter(node rsql.Node, fieldMap map[string]string) (*Filter, error) {
+func BuildFilter(node Node, fieldMap map[string]string) (*Filter, error) {
 	return rsqlNode(node, fieldMap)
 }
 
-func rsqlNode(node rsql.Node, fieldMap map[string]string) (*Filter, error) {
-	if val, ok := node.(*rsql.LogicalNode); ok {
+func rsqlNode(node Node, fieldMap map[string]string) (*Filter, error) {
+	if val, ok := node.(*LogicalNode); ok {
 		return logicalNode(val, fieldMap)
 	}
 
-	if val, ok := node.(*rsql.ComparisonNode); ok {
+	if val, ok := node.(*ComparisonNode); ok {
 		return comparisonNode(val, fieldMap)
 	}
 
 	return nil, fmt.Errorf("unsupported node type")
 }
 
-func logicalNode(node *rsql.LogicalNode, fieldMap map[string]string) (*Filter, error) {
+func logicalNode(node *LogicalNode, fieldMap map[string]string) (*Filter, error) {
 	var results []*Filter
 
 	for _, child := range node.Children {
@@ -52,7 +50,7 @@ func logicalNode(node *rsql.LogicalNode, fieldMap map[string]string) (*Filter, e
 	}
 
 	connector := " AND "
-	if node.Operator == rsql.TokenOr {
+	if node.Operator == TokenOr {
 		connector = " OR "
 	}
 
@@ -69,7 +67,7 @@ func logicalNode(node *rsql.LogicalNode, fieldMap map[string]string) (*Filter, e
 	}, nil
 }
 
-func comparisonNode(node *rsql.ComparisonNode, fieldMap map[string]string) (*Filter, error) {
+func comparisonNode(node *ComparisonNode, fieldMap map[string]string) (*Filter, error) {
 	operator, ok := rsqlToSQL[node.Operator]
 	if !ok {
 		return nil, fmt.Errorf("unsupported comparison operator %s", node.Operator)

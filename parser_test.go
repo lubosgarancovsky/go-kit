@@ -1,17 +1,19 @@
-package rsql
+package go_kit
 
 import (
 	"reflect"
 	"testing"
+
+	rsql2 "github.com/lubosgarancovsky/go-kit/internal/rsql"
 )
 
 func TestBasicExpression(t *testing.T) {
-	ast, err := New().Parse("name==John")
+	ast, err := NewRSQLParser().Parse("name==John")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &ComparisonNode{
+	expected := &rsql2.ComparisonNode{
 		Field:    "name",
 		Operator: "==",
 		Value:    []string{"John"},
@@ -23,12 +25,12 @@ func TestBasicExpression(t *testing.T) {
 }
 
 func TestEscapedBasicExpression(t *testing.T) {
-	ast, err := New().Parse("name==\"John Doe III.\"")
+	ast, err := NewRSQLParser().Parse("name==\"John Doe III.\"")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &ComparisonNode{
+	expected := &rsql2.ComparisonNode{
 		Field:    "name",
 		Operator: "==",
 		Value:    []string{"John Doe III."},
@@ -40,12 +42,12 @@ func TestEscapedBasicExpression(t *testing.T) {
 }
 
 func TestBasicExpressionWithArrayValue(t *testing.T) {
-	ast, err := New().Parse("name=in=(\"John Doe III.\",Jane, Mark)")
+	ast, err := NewRSQLParser().Parse("name=in=(\"John Doe III.\",Jane, Mark)")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &ComparisonNode{
+	expected := &rsql2.ComparisonNode{
 		Field:    "name",
 		Operator: "=in=",
 		Value:    []string{"John Doe III.", "Jane", "Mark"},
@@ -57,20 +59,20 @@ func TestBasicExpressionWithArrayValue(t *testing.T) {
 }
 
 func TestLogicAndExpression(t *testing.T) {
-	ast, err := New().Parse("name==John;age>=18")
+	ast, err := NewRSQLParser().Parse("name==John;age>=18")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &LogicalNode{
+	expected := &rsql2.LogicalNode{
 		Operator: "AND",
-		Children: []Node{
-			&ComparisonNode{
+		Children: []rsql2.Node{
+			&rsql2.ComparisonNode{
 				Field:    "name",
 				Operator: "==",
 				Value:    []string{"John"},
 			},
-			&ComparisonNode{
+			&rsql2.ComparisonNode{
 				Field:    "age",
 				Operator: ">=",
 				Value:    []string{"18"},
@@ -84,20 +86,20 @@ func TestLogicAndExpression(t *testing.T) {
 }
 
 func TestLogicOrExpression(t *testing.T) {
-	ast, err := New().Parse("name==John,age>=18")
+	ast, err := NewRSQLParser().Parse("name==John,age>=18")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &LogicalNode{
+	expected := &rsql2.LogicalNode{
 		Operator: "OR",
-		Children: []Node{
-			&ComparisonNode{
+		Children: []rsql2.Node{
+			&rsql2.ComparisonNode{
 				Field:    "name",
 				Operator: "==",
 				Value:    []string{"John"},
 			},
-			&ComparisonNode{
+			&rsql2.ComparisonNode{
 				Field:    "age",
 				Operator: ">=",
 				Value:    []string{"18"},
@@ -111,30 +113,30 @@ func TestLogicOrExpression(t *testing.T) {
 }
 
 func TestLogicOrAndExpression(t *testing.T) {
-	ast, err := New().Parse("(name==John,age>=18);isVerified==true")
+	ast, err := NewRSQLParser().Parse("(name==John,age>=18);isVerified==true")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &LogicalNode{
+	expected := &rsql2.LogicalNode{
 		Operator: "AND",
-		Children: []Node{
-			&LogicalNode{
+		Children: []rsql2.Node{
+			&rsql2.LogicalNode{
 				Operator: "OR",
-				Children: []Node{
-					&ComparisonNode{
+				Children: []rsql2.Node{
+					&rsql2.ComparisonNode{
 						Field:    "name",
 						Operator: "==",
 						Value:    []string{"John"},
 					},
-					&ComparisonNode{
+					&rsql2.ComparisonNode{
 						Field:    "age",
 						Operator: ">=",
 						Value:    []string{"18"},
 					},
 				},
 			},
-			&ComparisonNode{
+			&rsql2.ComparisonNode{
 				Field:    "isVerified",
 				Operator: "==",
 				Value:    []string{"true"},
@@ -148,35 +150,35 @@ func TestLogicOrAndExpression(t *testing.T) {
 }
 
 func TestAdvancedExpression(t *testing.T) {
-	ast, err := New().Parse("isDisabled==false;(name==John,age>=18);isVerified==true")
+	ast, err := NewRSQLParser().Parse("isDisabled==false;(name==John,age>=18);isVerified==true")
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &LogicalNode{
+	expected := &rsql2.LogicalNode{
 		Operator: "AND",
-		Children: []Node{
-			&ComparisonNode{
+		Children: []rsql2.Node{
+			&rsql2.ComparisonNode{
 				Field:    "isDisabled",
 				Operator: "==",
 				Value:    []string{"false"},
 			},
-			&LogicalNode{
+			&rsql2.LogicalNode{
 				Operator: "OR",
-				Children: []Node{
-					&ComparisonNode{
+				Children: []rsql2.Node{
+					&rsql2.ComparisonNode{
 						Field:    "name",
 						Operator: "==",
 						Value:    []string{"John"},
 					},
-					&ComparisonNode{
+					&rsql2.ComparisonNode{
 						Field:    "age",
 						Operator: ">=",
 						Value:    []string{"18"},
 					},
 				},
 			},
-			&ComparisonNode{
+			&rsql2.ComparisonNode{
 				Field:    "isVerified",
 				Operator: "==",
 				Value:    []string{"true"},
@@ -190,7 +192,7 @@ func TestAdvancedExpression(t *testing.T) {
 }
 
 func TestCustomOperator(t *testing.T) {
-	rsqlParser := New()
+	rsqlParser := NewRSQLParser()
 	rsqlParser.RegisterOperator("<=>")
 
 	ast, err := rsqlParser.Parse("name<=>John")
@@ -198,7 +200,7 @@ func TestCustomOperator(t *testing.T) {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	expected := &ComparisonNode{
+	expected := &rsql2.ComparisonNode{
 		Field:    "name",
 		Operator: "<=>",
 		Value:    []string{"John"},

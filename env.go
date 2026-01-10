@@ -1,4 +1,4 @@
-package cfg
+package go_kit
 
 import (
 	"bufio"
@@ -7,6 +7,8 @@ import (
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/lubosgarancovsky/go-kit/internal/utils"
 )
 
 func LoadEnv(target any, paths ...string) error {
@@ -30,7 +32,7 @@ func LoadEnv(target any, paths ...string) error {
 		}
 
 		defaultValue := field.Tag.Get("default")
-		fieldName := GetFieldName(field)
+		fieldName := utils.GetFieldName(field)
 
 		envValue, ok := cfgMap[fieldName]
 		if !ok {
@@ -38,7 +40,7 @@ func LoadEnv(target any, paths ...string) error {
 		}
 
 		if envValue != "" {
-			if err := SetFieldValue(value, envValue); err != nil {
+			if err := utils.SetFieldValue(value, envValue); err != nil {
 				return fmt.Errorf("failed to set field %s: %w", fieldName, err)
 			}
 		}

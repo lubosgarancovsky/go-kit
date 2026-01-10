@@ -8,6 +8,11 @@ import (
 
 type TokenType string
 
+type Pattern struct {
+	Type    TokenType
+	Pattern string
+}
+
 const (
 	TokenField    TokenType = "FIELD"
 	TokenOperator TokenType = "OPERATOR"
@@ -28,7 +33,7 @@ func (t Token) String() string {
 }
 
 func Tokenize(input string, patterns []Pattern) ([]Token, error) {
-	tokens := []Token{}
+	var tokens []Token
 	input = strings.TrimSpace(input)
 
 	for len(input) > 0 {

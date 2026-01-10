@@ -1,4 +1,4 @@
-package cfg
+package utils
 
 import (
 	"fmt"
@@ -6,20 +6,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-func MergeMaps(m1, m2 map[string]string) map[string]string {
-	result := make(map[string]string)
-
-	for k, v := range m1 {
-		result[k] = v
-	}
-
-	for k, v := range m2 {
-		result[k] = v
-	}
-
-	return result
-}
 
 // GetFieldName Returns variable name to look for in an .env file
 func GetFieldName(field reflect.StructField) string {

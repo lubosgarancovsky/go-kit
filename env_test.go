@@ -1,4 +1,4 @@
-package cfg
+package go_kit
 
 import (
 	"reflect"
@@ -38,7 +38,7 @@ type CombinedConfig struct {
 
 func TestLoad(t *testing.T) {
 	var config Config
-	err := LoadEnv(&config, "testdata/.env")
+	err := LoadEnv(&config, "./testdata/.env")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +60,7 @@ func TestLoad(t *testing.T) {
 
 func TestLoadCustomFile(t *testing.T) {
 	var config Config2
-	err := LoadEnv(&config, "testdata/.env.prod")
+	err := LoadEnv(&config, "./testdata/.env.prod")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +82,7 @@ func TestLoadCustomFile(t *testing.T) {
 
 func TestLoadMultipleFiles(t *testing.T) {
 	var config CombinedConfig
-	err := LoadEnv(&config, "testdata/.env", "testdata/.env.prod")
+	err := LoadEnv(&config, "./testdata/.env", "./testdata/.env.prod")
 	if err != nil {
 		t.Fatal(err)
 	}

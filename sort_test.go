@@ -1,4 +1,4 @@
-package sort
+package go_kit
 
 import (
 	"reflect"
@@ -13,7 +13,7 @@ func TestBuildSortDESC(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := []Sort{Sort{Field: "name", Direction: "DESC"}}
+	expected := []Sort{{Field: "name", Direction: "DESC"}}
 
 	if !reflect.DeepEqual(sort, expected) {
 		t.Errorf("Filter does not match expected.\nGot:\n%#v\nExpected:\n%#v", sort, expected)

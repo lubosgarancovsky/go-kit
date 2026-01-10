@@ -1,4 +1,4 @@
-package api_err
+package go_kit
 
 import "net/http"
 
@@ -55,5 +55,11 @@ var (
 		Code:       "INVALID_UUID",
 		Message:    "Invalid UUID",
 		HTTPStatus: http.StatusBadRequest,
+	}
+
+	ErrTooManyRequests = &ApiError{
+		Code:       "TOO_MANY_REQUESTS",
+		Message:    "Too many requests",
+		HTTPStatus: http.StatusTooManyRequests, //429
 	}
 )

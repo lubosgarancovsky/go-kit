@@ -1,4 +1,4 @@
-package api_err
+package go_kit
 
 import (
 	"log"
@@ -13,11 +13,11 @@ type ApiError struct {
 }
 
 type ApiErrorResponse struct {
-	Code          string `json:"code"`
-	Message       string `json:"message"`
-	CorrelationId string `json:"correlationId"`
-	ServiceID     string `json:"serviceId"`
-	Timestamp     string `json:"timestamp"`
+	Code      string `json:"code"`
+	Message   string `json:"message"`
+	RequestID string `json:"requestId"`
+	ServiceID string `json:"serviceId"`
+	Timestamp string `json:"timestamp"`
 }
 
 func (e *ApiError) Error() string {
@@ -38,13 +38,13 @@ func (e *ApiError) Clone() *ApiError {
 	return &cp
 }
 
-func (e *ApiError) ToJSON(serviceID string, correlationID string) *ApiErrorResponse {
+func (e *ApiError) ToJSON(serviceID string, requestID string) *ApiErrorResponse {
 	return &ApiErrorResponse{
-		Code:          e.Code,
-		Message:       e.Message,
-		CorrelationId: correlationID,
-		ServiceID:     serviceID,
-		Timestamp:     time.Now().Format(time.RFC3339),
+		Code:      e.Code,
+		Message:   e.Message,
+		RequestID: requestID,
+		ServiceID: serviceID,
+		Timestamp: time.Now().Format(time.RFC3339),
 	}
 }
 
