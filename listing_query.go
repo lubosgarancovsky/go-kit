@@ -104,8 +104,8 @@ func parseListingAttribute(attribute interface{}) (map[string]string, map[string
 		fieldName := ToSnakeCase(field.Name) // default field mapping
 		for _, part := range parts {
 			part = strings.TrimSpace(part)
-			if strings.HasPrefix(part, "field=") {
-				fieldName = strings.TrimPrefix(part, "field=")
+			if strings.HasPrefix(part, "field:") {
+				fieldName = strings.TrimPrefix(part, "field:")
 				continue
 			}
 			switch part {
