@@ -36,3 +36,38 @@ func TestKebabToSnake(t *testing.T) {
 		t.Errorf("Expected test_string, got %s", snake)
 	}
 }
+
+func TestSnakeToCamel(t *testing.T) {
+	camel := ToCamelCase("test_string")
+	if camel != "testString" {
+		t.Errorf("Expected testString, got %s", camel)
+	}
+}
+
+func TestPascalToCamel(t *testing.T) {
+	camel := ToCamelCase("TestString")
+	if camel != "testString" {
+		t.Errorf("Expected testString, got %s", camel)
+	}
+}
+
+func TestCamelToCamel(t *testing.T) {
+	camel := ToCamelCase("testString")
+	if camel != "testString" {
+		t.Errorf("Expected testString, got %s", camel)
+	}
+}
+
+func ScreamingToCamel(t *testing.T) {
+	camel := ToCamelCase("TEST_STRING")
+	if camel != "testString" {
+		t.Errorf("Expected testString, got %s", camel)
+	}
+}
+
+func KebabToCamel(t *testing.T) {
+	camel := ToCamelCase("test-string")
+	if camel != "testString" {
+		t.Errorf("Expected testString, got %s", camel)
+	}
+}

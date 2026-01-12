@@ -42,10 +42,14 @@ func NewListingQuery(qp *QueryParams, parser *Parser, listingAttr interface{}) (
 
 	if qp.Page == nil || *qp.Page <= 0 {
 		lq.Page = DEFAULT_PAGE
+	} else {
+		lq.Page = *qp.Page
 	}
 
 	if qp.PageSize == nil || *qp.PageSize <= 0 {
 		lq.Limit = DEFAULT_PAGE_SIZE
+	} else {
+		lq.Limit = *qp.PageSize
 	}
 
 	lq.Offset = (lq.Page - 1) * lq.Limit
@@ -110,9 +114,9 @@ func parseListingAttribute(attribute interface{}) (map[string]string, map[string
 			}
 			switch part {
 			case "filter":
-				filterMap[strings.ToLower(field.Name)] = fieldName
+				filterMap[ToCamelCase(field.Name)] = fieldName
 			case "sort":
-				sortMap[strings.ToLower(field.Name)] = fieldName
+				sortMap[ToCamelCase(field.Name)] = fieldName
 			}
 		}
 	}
