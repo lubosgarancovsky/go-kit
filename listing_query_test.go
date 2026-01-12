@@ -93,10 +93,11 @@ func TestAttributeParsing(t *testing.T) {
 		FirstName string `rsql:"filter,sort"`
 		Age       string `rsql:"filter,sort"`
 		IsActive  bool   `rsql:"filter"`
-		ParentId  string `rsql:"field:parent.id,filter"`
+		UserID    string `rsql:"field:userId,filter"`
+		ParentID  string `rsql:"field:parent.id,filter"`
 	}
 
-	expectedFilter := map[string]string{"firstName": "first_name", "age": "age", "isActive": "is_active", "parentId": "parent.id"}
+	expectedFilter := map[string]string{"firstName": "first_name", "age": "age", "isActive": "is_active", "userId": "userId", "parentId": "parent.id"}
 	expectedSort := map[string]string{"firstName": "first_name", "age": "age"}
 
 	filterMap, sortMap, err := parseListingAttribute(&attributes{})

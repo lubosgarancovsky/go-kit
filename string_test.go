@@ -49,6 +49,11 @@ func TestPascalToCamel(t *testing.T) {
 	if camel != "testString" {
 		t.Errorf("Expected testString, got %s", camel)
 	}
+
+	camelWithCapitalId := ToCamelCase("TestStringID")
+	if camelWithCapitalId != "testStringId" {
+		t.Errorf("Expected testString, got %s", camelWithCapitalId)
+	}
 }
 
 func TestCamelToCamel(t *testing.T) {
