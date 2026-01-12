@@ -90,6 +90,7 @@ func TestNewListingQuery(t *testing.T) {
 
 func TestAttributeParsing(t *testing.T) {
 	type attributes struct {
+		ID        string `rsql:"filter"`
 		FirstName string `rsql:"filter,sort"`
 		Age       string `rsql:"filter,sort"`
 		IsActive  bool   `rsql:"filter"`
@@ -97,7 +98,7 @@ func TestAttributeParsing(t *testing.T) {
 		ParentID  string `rsql:"field:parent.id,filter"`
 	}
 
-	expectedFilter := map[string]string{"firstName": "first_name", "age": "age", "isActive": "is_active", "userId": "userId", "parentId": "parent.id"}
+	expectedFilter := map[string]string{"id": "id", "firstName": "first_name", "age": "age", "isActive": "is_active", "userId": "userId", "parentId": "parent.id"}
 	expectedSort := map[string]string{"firstName": "first_name", "age": "age"}
 
 	filterMap, sortMap, err := parseListingAttribute(&attributes{})
