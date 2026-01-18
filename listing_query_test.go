@@ -159,3 +159,38 @@ func TestAttributeParsing2(t *testing.T) {
 		t.Errorf("Sort attributes do not match expected.\nGot:\n%#v\nExpected:\n%#v", sortMap, expectedSort)
 	}
 }
+
+func TestWithAttributes(t *testing.T) {
+	type attributes struct {
+		IsStarred bool   `rsql:"filter"`
+		FirstName string `rsql:"field:users.first_name,filter,sort"`
+	}
+
+	filter := "isStarred==true;firstName==John"
+
+	qp := &QueryParams{
+		Page:     nil,
+		PageSize: nil,
+		Sort:     nil,
+		Filter:   &filter,
+	}
+
+	rsqlParser := NewRSQLParser()
+
+	lq, err := NewListingQuery(qp, rsqlParser, &attributes{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if lq.Filter == nil {
+		t.Fatalf("Filter is nil")
+	}
+
+	expected := &rsql.Filter{
+		Query: "(is_starred = ? AND users.first_name = ?)",
+		Args:  []interface{}{"true", "John"}}
+
+	if !reflect.DeepEqual(lq.Filter, expected) {
+		t.Errorf("Filter does not match expected.\nGot:\n%#v\nExpected:\n%#v", lq.Filter, expected)
+	}
+}
