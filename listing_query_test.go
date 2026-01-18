@@ -114,3 +114,48 @@ func TestAttributeParsing(t *testing.T) {
 		t.Errorf("Sort attributes do not match expected.\nGot:\n%#v\nExpected:\n%#v", sortMap, expectedSort)
 	}
 }
+
+func TestAttributeParsing2(t *testing.T) {
+	type attributes struct {
+		IsStarred bool   `rsql:"filter"`
+		Role      string `rsql:"filter,sort"`
+		JoinedAt  string `rsql:"filter,sort"`
+		UserID    string `rsql:"field:users.id,filter"`
+		FirstName string `rsql:"field:users.first_name,filter,sort"`
+		LastName  string `rsql:"field:users.last_name,filter,sort"`
+		Username  string `rsql:"field:users.username,filter,sort"`
+		Name      string `rsql:"field:LOWER(users.first_name || ' ' || users.last_name),filter,sort"`
+	}
+
+	expectedFilter := map[string]string{
+		"isStarred": "is_starred",
+		"role":      "role",
+		"joinedAt":  "joined_at",
+		"userId":    "users.id",
+		"firstName": "users.first_name",
+		"lastName":  "users.last_name",
+		"username":  "users.username",
+		"name":      "LOWER(users.first_name || ' ' || users.last_name)",
+	}
+	expectedSort := map[string]string{
+		"role":      "role",
+		"joinedAt":  "joined_at",
+		"firstName": "users.first_name",
+		"lastName":  "users.last_name",
+		"username":  "users.username",
+		"name":      "LOWER(users.first_name || ' ' || users.last_name)",
+	}
+
+	filterMap, sortMap, err := parseListingAttribute(&attributes{})
+	if err != nil {
+		t.Errorf("Got an unexpected error %#v", err)
+	}
+
+	if !reflect.DeepEqual(filterMap, expectedFilter) {
+		t.Errorf("Filter attributes do not match expected.\nGot:\n%#v\nExpected:\n%#v", filterMap, expectedFilter)
+	}
+
+	if !reflect.DeepEqual(sortMap, expectedSort) {
+		t.Errorf("Sort attributes do not match expected.\nGot:\n%#v\nExpected:\n%#v", sortMap, expectedSort)
+	}
+}
